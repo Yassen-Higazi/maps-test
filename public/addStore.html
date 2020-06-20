@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Shop</title>
+  </head>
+  <body>
+    <div class="container">
+      <p id="msg"></p>
+      <form id="form">
+        <div class="from-group">
+          <label for="shopName"></label>
+          <input
+            id="name"
+            type="text"
+            name="shopName"
+            class="from-controle"
+            placeholder="Shop Name"
+          />
+        </div>
+        <div class="from-group">
+          <label for="address"></label>
+          <input
+            id="address"
+            type="text"
+            name="address"
+            class="from-controle"
+            placeholder="Shop Address"
+          />
+        </div>
+        <input type="submit" value="Add" />
+      </form>
+      <a href="/">Home</a>
+    </div>
+    <script>
+      const msg = document.getElementById("msg");
+      const form = document.getElementById("form");
+      const name = document.getElementById("name");
+      const address = document.getElementById("address");
+      form.addEventListener("submit", function submit(e) {
+        e.preventDefault();
+        const nameVal = name.value;
+        const addressVal = address.value;
+        fetch("/api/v1/shops", {
+          method: "post",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ name: nameVal, address: addressVal }),
+        }).then((res) => {
+          if (res.ok) {
+            msg.textContent = "Shop added";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

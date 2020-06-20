@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maps Test</title>
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js"></script>
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <a href="/addStore.html">add Store</a>
+    <div id="map" style="width: 800px; height: 800px;"></div>
+    <script>
+      mapboxgl.accessToken =
+        "pk.eyJ1IjoieWFzc2VuLWhpZ2F6aSIsImEiOiJja2JtOHI1NzIweTg4MnBzNHY0czkxamEwIn0.PjIEF69gCdVQbfgoCTUT7A";
+      const map = new mapboxgl.Map({
+        container: "map",
+        zoom: 10,
+        center: [32.52726, 15.61968],
+        style: "mapbox://styles/mapbox/streets-v11",
+      });
+
+      fetch("http://localhost:9999/api/v1/shops")
+        .then((res) => res.json())
+        .then((res) => {
+          map.on("load", function () {
+            for (let point of res.data) {
+              map.addSource(point.name, {
+                type: "geojson",
+                data: {
+                  type: "FeatureCollection",
+                  features: [
+                    {
+                      type: "Feature",
+                      geometry: point.location.geometry,
+                    },
+                  ],
+                },
+              });
+
+              map.addLayer({
+                id: point.name,
+                source: point.name,
+                type: "circle",
+                paint: {
+                  "circle-radius": 10,
+                  "circle-color": "#007cbf",
+                },
+              });
+            }
+          });
+        });
+    </script>
+  </body>
+</html>
